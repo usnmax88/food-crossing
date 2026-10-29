@@ -40,7 +40,7 @@
         companyName: "DefaultCompany",
         productName: "Food Crossing",
         productVersion: "0.1.0",
-        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),  // sharp enough, and keeps phones fast
+        devicePixelRatio: window.devicePixelRatio || 1,  // every pixel the phone has
       }, (progress) => {
         loading.textContent = "Loading " + Math.round(progress * 100) + "%";
       }).then(() => {
