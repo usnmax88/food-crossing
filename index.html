@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Food Crossing</title>
+    <style>
+      html, body {
+        margin: 0; height: 100%; overflow: hidden; background: #fadbb8;
+        touch-action: none; overscroll-behavior: none;
+        -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+      }
+      /* Full screen on a phone; a phone-shaped 9:16 box on a wide screen. */
+      #unity-canvas {
+        position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+        width: 100vw; height: 100vh; height: 100dvh;
+        max-width: 56.25vh; max-width: 56.25dvh;
+        touch-action: none; outline: none; background: #fadbb8;
+      }
+      #loading {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        font: bold 20px -apple-system, system-ui, sans-serif; color: #7a3b2e; pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="loading">Loading…</div>
+    <script src="Build/Web.loader.js"></script>
+    <script>
+      const loading = document.querySelector("#loading");
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        arguments: [],
+        dataUrl: "Build/Web.data.unityweb",
+        frameworkUrl: "Build/Web.framework.js.unityweb",
+        codeUrl: "Build/Web.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Food Crossing",
+        productVersion: "0.1.0",
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),  // sharp enough, and keeps phones fast
+      }, (progress) => {
+        loading.textContent = "Loading " + Math.round(progress * 100) + "%";
+      }).then(() => {
+        loading.remove();
+      }).catch((message) => {
+        loading.textContent = message;
+      });
+    </script>
+  </body>
+</html>
