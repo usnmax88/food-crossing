@@ -6,6 +6,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Food Crossing</title>
+    <link rel="preload" as="image" href="loading/cover.webp">
     <style>
       html, body {
         margin: 0; height: 100%; overflow: hidden; background: #fadbb8;
@@ -13,40 +14,77 @@
         -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
       }
       /* Full screen on a phone; a phone-shaped 9:16 box on a wide screen. */
-      #unity-canvas {
+      #unity-canvas, #loading {
         position: fixed; top: 0; left: 50%; transform: translateX(-50%);
         width: 100vw; height: 100vh; height: 100dvh;
         max-width: 56.25vh; max-width: 56.25dvh;
-        touch-action: none; outline: none; background: #fadbb8;
       }
+      #unity-canvas { touch-action: none; outline: none; background: #fadbb8; }
+      /* While the game loads: the HOTLINE cover (Design/mockups/linehell/i25_loading_tall.png), and on its empty
+         counter the game's own gauge (Menu.ProgressBar: a dark groove filling red) on a steel plate, LOADING written
+         in marker on blue tape above it, as the game writes on tape. */
       #loading {
-        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-        font: bold 20px -apple-system, system-ui, sans-serif; color: #7a3b2e; pointer-events: none;
+        background: #9a7e7d url("loading/cover.webp") center / cover no-repeat;
+        pointer-events: none; transition: opacity 0.35s;
+      }
+      #loading.done { opacity: 0; }
+      #loader { position: absolute; left: 11%; right: 11%; bottom: calc(7% + env(safe-area-inset-bottom)); }
+      #loader .tape {
+        display: block; position: relative; z-index: 1; width: 46%; margin: 0 auto -3%;
+        transform: rotate(-2deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+      }
+      #loader .plate {
+        position: relative; aspect-ratio: 780 / 104; background: url("loading/plate.webp") center / 100% 100%;
+        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+      }
+      #loader .groove {
+        position: absolute; left: 6%; right: 6%; top: 28%; bottom: 28%;
+        border-radius: 7px; background: #2b2e33; box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
+      }
+      #loader .fill {
+        position: absolute; left: 3px; top: 3px; bottom: 3px; width: 0; min-width: 12px;
+        border-radius: 5px; background: #db2b1f; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
+        transition: width 0.25s ease-out;
+      }
+      #loader .error {
+        display: none; margin-top: 12px; padding: 8px 12px; border-radius: 8px; background: rgba(43, 46, 51, 0.9);
+        font: 600 14px -apple-system, system-ui, sans-serif; color: #fff; text-align: center;
       }
     </style>
   </head>
   <body>
     <canvas id="unity-canvas" tabindex="-1"></canvas>
-    <div id="loading">Loading…</div>
-    <script src="Build/6165cf93acabf75b536a2e196e2eaf79.loader.js"></script>
+    <div id="loading">
+      <div id="loader">
+        <img class="tape" src="loading/tape.webp" alt="Loading">
+        <div class="plate"><div class="groove"><div class="fill"></div></div></div>
+        <div class="error"></div>
+      </div>
+    </div>
+    <script src="Build/1ca0e6ac6bc95cbd01d98623db99832a.loader.js"></script>
     <script>
       const loading = document.querySelector("#loading");
+      const fill = loading.querySelector(".fill");
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/6afd8c3528d14f5b074e2ef7ecd81564.data.unityweb",
+        dataUrl: "Build/1a6d539453b39cbad5264b1dabeefc24.data.unityweb",
         frameworkUrl: "Build/d25ba467e7a56ff6ad92506c6c01d2e2.framework.js.unityweb",
-        codeUrl: "Build/5a64b59fd0acefdf7f46b0fcdb666d35.wasm.unityweb",
+        codeUrl: "Build/98954b7cd7837feca391f58b019fb942.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Food Crossing",
         productVersion: "0.1.0",
         devicePixelRatio: window.devicePixelRatio || 1,  // every pixel the phone has
       }, (progress) => {
-        loading.textContent = "Loading " + Math.round(progress * 100) + "%";
+        fill.style.width = "calc((100% - 6px) * " + progress + ")";
       }).then(() => {
-        loading.remove();
+        fill.style.width = "calc(100% - 6px)";
+        loading.classList.add("done");
+        setTimeout(() => loading.remove(), 400);
       }).catch((message) => {
-        loading.textContent = message;
+        const error = loading.querySelector(".error");
+        error.textContent = message;
+        error.style.display = "block";
       });
     </script>
   </body>
