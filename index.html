@@ -20,31 +20,34 @@
         max-width: 56.25vh; max-width: 56.25dvh;
       }
       #unity-canvas { touch-action: none; outline: none; background: #fadbb8; }
-      /* While the game loads: the HOTLINE cover (Design/mockups/linehell/i25_loading_tall.png), and on its empty
-         counter the game's own gauge (Menu.ProgressBar: a dark groove filling red) on a steel plate, LOADING written
-         in marker on blue tape above it, as the game writes on tape. */
+      /* While the game loads: the HOTLINE cover (Design/mockups/linehell/i28_loading_ribbon_tall.png: the ribbon logo,
+         the chili, milk and basil, and below them a plain counter as tall as a phone) pinned to the top, and on its
+         counter the loading line from Design/mockups/linehell/i24_load_bar.png: a screwed steel plate (cut from that
+         picture, its channel emptied) whose channel fills glossy red, a blue gas flame riding the tip of the red. */
       #loading {
-        background: #9a7e7d url("loading/cover.webp") center / cover no-repeat;
+        background: #9a7e7d url("loading/cover.webp") center top / cover no-repeat;
         pointer-events: none; transition: opacity 0.35s;
       }
       #loading.done { opacity: 0; }
-      #loader { position: absolute; left: 11%; right: 11%; bottom: calc(7% + env(safe-area-inset-bottom)); }
-      #loader .tape {
-        display: block; position: relative; z-index: 1; width: 46%; margin: 0 auto -3%;
-        transform: rotate(-2deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
-      }
+      #loader { position: absolute; left: 9%; right: 9%; bottom: calc(6% + env(safe-area-inset-bottom)); }
       #loader .plate {
-        position: relative; aspect-ratio: 780 / 104; background: url("loading/plate.webp") center / 100% 100%;
+        position: relative; aspect-ratio: 1266 / 279; background: url("loading/plate.webp") center / 100% 100%;
         filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
       }
-      #loader .groove {
-        position: absolute; left: 6%; right: 6%; top: 28%; bottom: 28%;
-        border-radius: 7px; background: #2b2e33; box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
-      }
+      /* the painted channel's inside, measured on plate.webp */
+      #loader .groove { position: absolute; left: 6.5%; right: 6.4%; top: 26.2%; bottom: 25.4%; }
       #loader .fill {
         position: absolute; left: 3px; top: 3px; bottom: 3px; width: 0; min-width: 12px;
-        border-radius: 5px; background: #db2b1f; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
-        transition: width 0.25s ease-out;
+        border-radius: 5px; background: linear-gradient(#ee4034, #d62419 55%, #b5150e);
+        box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.25); transition: width 0.25s ease-out;
+      }
+      #loader .fill::before {
+        content: ""; position: absolute; left: 6px; right: 6px; top: 14%; height: 28%; border-radius: 99px;
+        background: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15));
+      }
+      #loader .flame {
+        position: absolute; right: 0; bottom: -4%; height: 165%; aspect-ratio: 48 / 64; transform: translateX(42%);
+        filter: drop-shadow(0 0 5px rgba(80, 160, 255, 0.9));
       }
       #loader .error {
         display: none; margin-top: 12px; padding: 8px 12px; border-radius: 8px; background: rgba(43, 46, 51, 0.9);
@@ -56,20 +59,34 @@
     <canvas id="unity-canvas" tabindex="-1"></canvas>
     <div id="loading">
       <div id="loader">
-        <img class="tape" src="loading/tape.webp" alt="Loading">
-        <div class="plate"><div class="groove"><div class="fill"></div></div></div>
+        <div class="plate"><div class="groove"><div class="fill">
+          <svg class="flame" viewBox="0 0 48 64" aria-hidden="true">
+            <defs>
+              <radialGradient id="flame-outer" cx="50%" cy="78%" r="72%">
+                <stop offset="0" stop-color="#e8f6ff"/><stop offset="0.35" stop-color="#7cc4ff"/>
+                <stop offset="0.75" stop-color="#2f7dff"/><stop offset="1" stop-color="#1c4fd8"/>
+              </radialGradient>
+              <radialGradient id="flame-inner" cx="50%" cy="85%" r="70%">
+                <stop offset="0" stop-color="#fff"/><stop offset="0.6" stop-color="#d6efff"/><stop offset="1" stop-color="#8fd0ff"/>
+              </radialGradient>
+            </defs>
+            <!-- three tongues, the middle one tallest, and a pale core -->
+            <path fill="url(#flame-outer)" d="M24 2C27 12 31 16 33 22C36 17 38 14 39 10C43 20 46 30 46 40C46 54 36 62 24 62C12 62 2 54 2 41C2 31 6 22 10 15C11 20 13 23 15 25C16 16 20 9 24 2Z"/>
+            <path fill="url(#flame-inner)" d="M24 24C26 31 31 35 32 43C33 51 29 57 24 57C19 57 15 52 16 45C16 40 19 36 20 31C21 35 22 36 23 37C22 32 22 28 24 24Z"/>
+          </svg>
+        </div></div></div>
         <div class="error"></div>
       </div>
     </div>
-    <script src="Build/5586c36df5c01dbf18977c20e4216fc5.loader.js"></script>
+    <script src="Build/cd41feca11b4921d4dc141eb3be182bd.loader.js"></script>
     <script>
       const loading = document.querySelector("#loading");
       const fill = loading.querySelector(".fill");
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/631c57413c1912ed7dbdd4c9cc8fb079.data.unityweb",
+        dataUrl: "Build/232826c162fed4894a229896fe244d3f.data.unityweb",
         frameworkUrl: "Build/d25ba467e7a56ff6ad92506c6c01d2e2.framework.js.unityweb",
-        codeUrl: "Build/86267ff4a10a59513dce017800292deb.wasm.unityweb",
+        codeUrl: "Build/34287a512e300126aeb94579211a2874.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Food Crossing",
