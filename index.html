@@ -8,7 +8,11 @@
     <title>Food Crossing</title>
     <link rel="preload" as="image" href="loading/cover.webp">
     <script>
-      document.documentElement.classList.toggle("cartoon", new URLSearchParams(location.search).get("look") === "cartoon");
+      {
+        const look = new URLSearchParams(location.search).get("look");
+        document.documentElement.classList.toggle("cartoon", look === "cartoon");
+        document.documentElement.classList.toggle("diner", look === "diner");
+      }
     </script>
     <style>
       html, body {
@@ -65,6 +69,18 @@
         background: #e52e20; box-shadow: none;
       }
       html.cartoon #loader .fill::before { display: none; }
+      /* the diner look (Scripts/Diner.cs): the cover and plate in its matte blue-grey paint, a plum-brown line round
+         the red fill over a soft lavender shadow */
+      html.diner, html.diner body { background: #e9dcc8; }
+      html.diner #unity-canvas { background: #e9dcc8; }
+      html.diner #loading { background: #b9c3d3 url("loading/cover-diner.webp") center top / cover no-repeat; }
+      html.diner #loader .plate {
+        background-image: url("loading/plate-diner.webp");
+        filter: drop-shadow(0 6px 8px rgba(61, 36, 87, 0.4));
+      }
+      html.diner #loader .fill {
+        border: 1.5px solid #29141a; background: linear-gradient(#f2483b, #dc2a1d 55%, #bb1a12);
+      }
     </style>
   </head>
   <body>
@@ -75,15 +91,15 @@
         <div class="error"></div>
       </div>
     </div>
-    <script src="Build/2794249b31aea3bafd0afcacdde23ecd.loader.js"></script>
+    <script src="Build/ccfdad016430e07e6a248bd2bd41ed7f.loader.js"></script>
     <script>
       const loading = document.querySelector("#loading");
       const fill = loading.querySelector(".fill");
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/c4f74850f980e0f9ad860584756236d9.data.unityweb",
+        dataUrl: "Build/81547f0b19173ae11dad0fcd45041144.data.unityweb",
         frameworkUrl: "Build/d25ba467e7a56ff6ad92506c6c01d2e2.framework.js.unityweb",
-        codeUrl: "Build/08bfb5a330db9c01c07adcd365b8c109.wasm.unityweb",
+        codeUrl: "Build/f7caf4f24d5fbf3dfbc60a44c33ac159.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Food Crossing",
