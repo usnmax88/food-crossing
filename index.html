@@ -9,8 +9,9 @@
     <link rel="preload" as="image" href="loading/cover.webp">
     <script>
       {
-        const look = new URLSearchParams(location.search).get("look");
-        document.documentElement.classList.toggle("cartoon", look === "cartoon");
+        const address = new URLSearchParams(location.search), look = address.get("look");
+        // the first cartoon look (&grade=8, Scripts/Ink.cs First) keeps the regular interface and cover
+        document.documentElement.classList.toggle("cartoon", look === "cartoon" && address.get("grade") !== "8");
         document.documentElement.classList.toggle("diner", look === "diner");
       }
     </script>
@@ -91,15 +92,15 @@
         <div class="error"></div>
       </div>
     </div>
-    <script src="Build/ba938f932fcf8574cf4eaf95091f04cc.loader.js"></script>
+    <script src="Build/9b2988918234b701717f6f2fc24354f4.loader.js"></script>
     <script>
       const loading = document.querySelector("#loading");
       const fill = loading.querySelector(".fill");
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/378094b7b33d6e3544af6454aeabca86.data.unityweb",
+        dataUrl: "Build/2f35183787e19fd4147a3bbc35ee6f59.data.unityweb",
         frameworkUrl: "Build/d25ba467e7a56ff6ad92506c6c01d2e2.framework.js.unityweb",
-        codeUrl: "Build/f43b39190661b1a520aaa7f99617ef8e.wasm.unityweb",
+        codeUrl: "Build/f0b10e45dcb6ed22e7349fe94c1aee27.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Food Crossing",
