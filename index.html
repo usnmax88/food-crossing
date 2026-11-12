@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Food Crossing</title>
-    <link rel="preload" as="image" href="loading/cover.webp">
+    <title>Food Rush</title>
+    <link rel="preload" as="image" href="loading/cover-pixel.png">
     <script>
       {
         const address = new URLSearchParams(location.search), look = address.get("look");
         // the first cartoon look (&grade=8, Scripts/Ink.cs First) keeps the regular interface and cover
         document.documentElement.classList.toggle("cartoon", look === "cartoon" && address.get("grade") !== "8");
         document.documentElement.classList.toggle("diner", look === "diner");
+        // the pixel look is the one the game ships in (Scripts/Pixel.cs): what opens with no look in the address
+        document.documentElement.classList.toggle("pixel", look === null || look === "pixel");
       }
     </script>
     <style>
@@ -45,7 +47,7 @@
       /* the painted channel's inside, measured on plate.webp */
       #loader .groove { position: absolute; left: 6.5%; right: 6.4%; top: 26.2%; bottom: 25.4%; }
       #loader .fill {
-        position: absolute; left: 3px; top: 3px; bottom: 3px; width: 0; min-width: 12px;
+        position: absolute; left: 3px; top: 3px; bottom: 3px; width: calc((100% - 6px) * var(--done, 0)); min-width: 12px;
         border-radius: 5px; background: linear-gradient(#ee4034, #d62419 55%, #b5150e);
         box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.25); transition: width 0.25s ease-out;
       }
@@ -82,6 +84,27 @@
       html.diner #loader .fill {
         border: 1.5px solid #29141a; background: linear-gradient(#f2483b, #dc2a1d 55%, #bb1a12);
       }
+      /* the pixel look (Scripts/Pixel.cs), the one the game ships in: the first cover's scene and logo as pixel art,
+         the chili and two friends running at us down the kitchen's steel counter under the ribbon, which reads FOOD
+         RUSH; the counter in front of them plain for the loading line, a cream key whose dark channel fills red
+         (Art/pixel_cover.py makes both, four screen pixels to each of their own) */
+      html.pixel, html.pixel body { background: #24223e; }
+      html.pixel #unity-canvas { background: #24223e; }
+      html.pixel #loading {
+        background: #425a84 url("loading/cover-pixel.png") center top / cover no-repeat; image-rendering: pixelated;
+      }
+      html.pixel #loader .plate {
+        aspect-ratio: 216 / 26; background-image: url("loading/plate-pixel.png"); image-rendering: pixelated;
+        filter: drop-shadow(0 4px 0 rgba(44, 52, 110, 0.3));
+      }
+      /* the channel's inside, in the plate's own pixels: 7 in from either end, 6 down, 10 up */
+      html.pixel #loader .groove { left: 3.24%; right: 3.24%; top: 23.08%; bottom: 38.46%; }
+      html.pixel #loader .fill {
+        left: 0; top: 0; bottom: 0; width: calc(100% * var(--done, 0)); min-width: 0;
+        border-radius: 0; box-shadow: none;
+        background: linear-gradient(#ff8474 0 25%, #d82436 25% 75%, #98103c 75%);
+      }
+      html.pixel #loader .fill::before { display: none; }
     </style>
   </head>
   <body>
@@ -92,24 +115,24 @@
         <div class="error"></div>
       </div>
     </div>
-    <script src="Build/e3f5c9269d7e1e62e74921580972d474.loader.js"></script>
+    <script src="Build/ed73d71b41c7d190294e541f080f5f45.loader.js"></script>
     <script>
       const loading = document.querySelector("#loading");
       const fill = loading.querySelector(".fill");
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/85db1e1a1484326242f558e01bd59046.data.unityweb",
+        dataUrl: "Build/5b59f0f6ca8b6078c97d76e4be87ad4c.data.unityweb",
         frameworkUrl: "Build/d25ba467e7a56ff6ad92506c6c01d2e2.framework.js.unityweb",
-        codeUrl: "Build/34a9160f17669fdf8aa0e851a518f6b2.wasm.unityweb",
+        codeUrl: "Build/cd26d2c71127d8ed824b6ff63798c7b4.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
-        productName: "Food Crossing",
+        productName: "Food Rush",
         productVersion: "0.1.0",
         devicePixelRatio: window.devicePixelRatio || 1,  // every pixel the phone has
       }, (progress) => {
-        fill.style.width = "calc((100% - 6px) * " + progress + ")";
+        fill.style.setProperty("--done", progress);
       }).then(() => {
-        fill.style.width = "calc(100% - 6px)";
+        fill.style.setProperty("--done", 1);
         loading.classList.add("done");
         setTimeout(() => loading.remove(), 400);
       }).catch((message) => {
